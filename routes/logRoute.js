@@ -9,8 +9,8 @@ const XLSX = require("xlsx");
 // POST /api/log-location
 router.post("/log-location", async (req, res) => {
   try {
-    const { lat, lng, networkType,date,time } = req.body;
-    const location = new Location({ lat, lng, networkType,date,time });
+    const { lat, lng, accuracy,networkType,date,time } = req.body;
+    const location = new Location({ lat, lng,accuracy, networkType,date,time });
     await location.save();
     res.status(201).json({ message: "Location logged successfully", location });
   } catch (err) {
