@@ -25,6 +25,10 @@ const locationSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    address: {
+        type: String,
+        required: true
+    },
     networkType: {
         type: String,
         required: true,

@@ -33,10 +33,10 @@ router.post("/log-location", async (req, res) => {
       lat,
       lng,
       accuracy,
+      address,
       networkType,
       date,
-      time,
-      address // ✅ add address to DB
+      time
     });
 
     await location.save();
@@ -97,12 +97,15 @@ router.get("/export-xlsx", async (req, res) => {
 
     // Map your data to worksheet format
     const worksheetData = locations.map(loc => ({
+      DeviceSerialNumber : loc.deviceSerialNumber,
       Lat: loc.lat,
       Lng: loc.lng,
+      Accuracy : loc.accuracy,
+      Address : loc.address,
       NetworkType: loc.networkType,
-      Date : loc.date,
-      Time : loc.time
-    //   dateTime: loc.dateTime || `${loc.date} ${loc.time}` // adjust as needed
+      Date: loc.date,
+      Time: loc.time
+      //   dateTime: loc.dateTime || `${loc.date} ${loc.time}` // adjust as needed
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(worksheetData);
