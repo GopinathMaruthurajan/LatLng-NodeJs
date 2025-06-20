@@ -1,5 +1,5 @@
-const router = express.Router();
 const express = require("express");
+const router = express.Router();
 const axios = require("axios");
 const Location = require("../models/Location");
 const { Parser } = require("json2csv");
