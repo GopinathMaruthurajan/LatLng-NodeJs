@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const locationSchema = new mongoose.Schema({
+    deviceSerialNumber: {
+        type: String,
+        required: true
+    },
     date: {
         type: String,
         required: true
