@@ -5,6 +5,10 @@ const Location = require("../models/Location");
 const { Parser } = require("json2csv");
 const XLSX = require("xlsx");
 
+router.get("/ping", (req, res) => {
+  res.send("✅ Server is alive!");
+});
+
 // POST /api/log-location
 router.post("/log-location", async (req, res) => {
   try {
