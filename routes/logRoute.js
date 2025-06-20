@@ -76,6 +76,45 @@ router.get("/locations-by-date", async (req, res) => {
   }
 });
 
+// GET /api/locations-by-device?deviceSerialNumber=POS123
+router.get("/locations-by-device", async (req, res) => {
+  try {
+    const { deviceSerialNumber } = req.query;
+    if (!deviceSerialNumber) {
+      return res.status(400).json({ error: "deviceSerialNumber is required" });
+    }
+
+    const locations = await Location.find({ deviceSerialNumber }).sort({ createdAt: -1 });
+    res.json(locations);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/locations-by-device-and-date?deviceSerialNumber=POS123&date=2025-06-18
+router.get("/locations-by-device-and-date", async (req, res) => {
+  try {
+    const { deviceSerialNumber, date } = req.query;
+
+    if (!deviceSerialNumber || !date) {
+      return res.status(400).json({ error: "deviceSerialNumber and date are required" });
+    }
+
+    const start = new Date(date);
+    const end = new Date(date);
+    end.setHours(23, 59, 59, 999);
+
+    const locations = await Location.find({
+      deviceSerialNumber,
+      createdAt: { $gte: start, $lte: end }
+    }).sort({ createdAt: -1 });
+
+    res.json(locations);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // GET /api/export-csv
 router.get("/export-csv", async (req, res) => {
   try {
