@@ -1,5 +1,3 @@
-// locationLoggerProject/routes/logRoute.js
-
 const express = require("express");
 const router = express.Router();
 const Location = require("../models/Location");
@@ -9,9 +7,40 @@ const XLSX = require("xlsx");
 // POST /api/log-location
 router.post("/log-location", async (req, res) => {
   try {
-    const { deviceSerialNumber,lat, lng, accuracy,networkType,date,time } = req.body;
-    const location = new Location({ deviceSerialNumber,lat, lng,accuracy, networkType,date,time });
+    const { deviceSerialNumber, lat, lng, accuracy, networkType, date, time } = req.body;
+
+    // Call Nominatim API to reverse geocode
+    let address = "Unknown Address";
+    try {
+      const geoRes = await axios.get("https://nominatim.openstreetmap.org/reverse", {
+        params: {
+          format: "jsonv2",
+          lat,
+          lon: lng
+        },
+        headers: {
+          'User-Agent': 'latlngNodejs/1.0 (gopi.dev@example.com)'
+        }
+      });
+
+      address = geoRes.data.display_name || "Unknown Address";
+    } catch (geoErr) {
+      console.warn("Geocoding failed:", geoErr.message);
+    }
+
+    const location = new Location({
+      deviceSerialNumber,
+      lat,
+      lng,
+      accuracy,
+      networkType,
+      date,
+      time,
+      address // ✅ add address to DB
+    });
+
     await location.save();
+
     res.status(201).json({ message: "Location logged successfully", location });
   } catch (err) {
     res.status(500).json({ error: err.message });
